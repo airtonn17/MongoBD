@@ -62,4 +62,3 @@ if response.status_code == 200:
     print(data)
 else:
     print("Erro ao consultar o CEP")
-
