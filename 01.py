@@ -1,23 +1,25 @@
-# from pymongo.mongo_client import MongoClient
-# import os
-# from dotenv import load_dotenv
-# # Carrega as variáveis do .env
-# load_dotenv()
+from pymongo.mongo_client import MongoClient # Importando a biblioteca de conexão com o banco Mongo
+import os # Importando biblioteca para usar recursos do SO (como acessar arquivos)
+from dotenv import load_dotenv # Carregar as informações do arquivo .env (para proteger dados sensíveis)
+import requests # Uma biblioteca que permite que me conecte com outras APIs
+load_dotenv() # Carrega as variáveis do .env
 
-# # Acessa as variáveis de ambiente
-# uri = os.getenv("MONGO_URI")
-#
-# # Exemplo de impressão
-# print("MONGO_URI:", uri)
+"""
+# # Criando a conexão com meu Banco de Dados
+"""
+# Acessa as variáveis de ambiente
+uri = os.getenv("MONGO_URI")
+
+# Exemplo de impressão dos dados .env
+print("MONGO_URI:", uri)
 
 # Create a new client and connect to the server
-#
-# client = MongoClient(uri)
-# db = client.teste
+client = MongoClient(uri) # Preenchendo a variável client com o resultado da função MongoClient que cria a conexão com o MongoDB através dos dados contidos no parâmetro uri
+db = client.teste # A variável db recebe a função que da nome (teste) ao meu BD
 
-# collection = db.endereco
-# collection.insert_one({'cep': '60871-640', 'logradouro': 'Rua José Cavalcante Sobrinho', 'complemento': '', 'unidade': '', 'bairro': 'Coaçu', 'localidade': 'Fortaleza', 'uf': 'CE', 'estado': 'Ceará', 'regiao': 'Nordeste', 'ibge': '2304400', 'gia': '', 'ddd': '85', 'siafi': '1389'})
-
+"""
+# # Inserindo dados no Banco de Dados "teste" na coleção "test"
+"""
 # collection = db.test
 # collection.insert_one({"nome":"Airton"})
 # collection.insert_many([
@@ -27,39 +29,80 @@
 # ])
 # Send a ping to confirm a successful connection
 
-
+"""
+# # Verificar se a conexão com o MongoDB foi estabelecida com sucesso
+"""
 # try:
 #     client.admin.command('ping')
 #     print("Pinged your deployment. You successfully connected to MongoDB!")
 # except Exception as e:
 #     print(e)
 
-from pymongo.mongo_client import MongoClient # Importando a biblioteca de conexão com o banco Mongo
-import os # Importando biblioteca para usar recursos do SO (como acessar arquivos)
-from dotenv import load_dotenv # Carregar as informações do arquivo .env (para proteger dados sensíveis)
-import requests # Uma biblioteca que permite que me conecte com outras APIs
-load_dotenv() # Carrega as variáveis do .env
+"""
+# # Buscando de forma manual um CEP e inserindo no meu Banco de Dados
+"""
+# cep = "70070600"  # CEP de exemplo
+# url = f"https://viacep.com.br/ws/{cep}/json/" # Acesso à API que retorna os dados do CEP
+#
+# response = requests.get(url) # requests.get é uma função que busca (get) os dados do parametro url e aloca na variável response
+# print(response.json())
 
-# Acessa as variáveis de ambiente
-uri = os.getenv("MONGO_URI") # Acessando os dados da variável de ambiente
+# if response.status_code == 200:
+#     data = response.json()
+#     collection = db.endereco
+#     collection.insert_one(data)
+#     print(data)
+# else:
+#     print("Erro ao consultar o CEP")
 
-# Exemplo de impressão dos dados .env
-print("MONGO_URI:", uri)
+"""
+# # Exercício 1 - Transformar o código em uma Função
+"""
+# def buscacep(cepusuario):
+#     url = f"https://viacep.com.br/ws/{cepusuario}/json/"
+#     response = requests.get(url)
+#     if response.status_code == 200:
+#         data = response.json()
+#         collection = db.endereco
+#         documentos = list(collection.find({'cep':cepusuario}))
+#         print(documentos)
+#
+#         if len(documentos) == 0:
+#             documentos = collection.find({'bairro':'Coaçu'})
+#             collection.insert_one(data)
+#         print("O resultado da sua busca é: \n", data)
+#     else:
+#         print("Erro ao consultar o CEP")
+#
+# print("-" * 30)
+# print("    Bem Vindo ao Busca CEP")
+# print("-" * 30)
+# nome = input("Digite seu nome: ")
+# cep = input(f"Olá, {nome}! Por favor digite seu CEP: ")
+# buscacep(cep)
 
-client = MongoClient(uri) # Preenchendo a variável client com o resultado da função MongoClient que cria a conexão com o MongoDB através dos dados contidos no parâmetro uri
-db = client.teste # A variável db recebe a função que da nome ao meu BD
+"""
+# # Exercício 1 - Transformar o código em uma Função
+"""
+def buscacep(cepusuario):
+    url = f"https://viacep.com.br/ws/{cepusuario}/json/"
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        collection = db.endereco
+        documentos = list(collection.find({'cep':cepusuario}))
+        print(documentos)
 
-cep = "70070600"  # CEP de exemplo
-url = f"https://viacep.com.br/ws/{cep}/json/" # Acesso à API que retorna os dados do CEP
+        if len(documentos) == 0:
+            documentos = collection.find({'bairro':'Coaçu'})
+            collection.insert_one(data)
+        print("O resultado da sua busca é: \n", data)
+    else:
+        print("Erro ao consultar o CEP")
 
-response = requests.get(url) # requests.get é uma função que busca (get) os dados do parametro url e aloca na variável response
-print(response.json())
-
-if response.status_code == 200:
-    data = response.json()
-    collection = db.endereco
-    collection.insert_one(data)
-    print(data)
-else:
-    print("Erro ao consultar o CEP")
-
+print("-" * 30)
+print("    Bem Vindo ao Busca CEP")
+print("-" * 30)
+nome = input("Digite seu nome: ")
+cep = input(f"Olá, {nome}! Por favor digite seu CEP: ")
+buscacep(cep)
