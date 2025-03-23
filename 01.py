@@ -84,6 +84,40 @@ db = client.teste # A variável db recebe a função que da nome (teste) ao meu 
 """
 # # Exercício 1 - Transformar o código em uma Função
 """
+def buscacep(cepusuario):
+    url = f"https://viacep.com.br/ws/{cepusuario}/json/"
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        collection = db.endereco
+        documentos = list(collection.find({'cep':cepusuario}))
+        print(documentos)
+
+        if len(documentos) == 0:
+            documentos = collection.find({'bairro':'Coaçu'})
+            # collection.insert_one(data)
+        print("O resultado da sua busca é: \n", data)
+    else:
+        print("Erro ao consultar o CEP")
+
+print("-" * 30)
+print("    Bem Vindo ao Busca CEP")
+print("-" * 30)
+nome = input("Digite seu nome: ")
+cep = input(f"Olá, {nome}! Por favor digite seu CEP: ")
+buscacep(cep)
+
+continuar = 'sim'
+while continuar == 'sim':
+    continuar = input(f'{nome}, deseja pesquisar outro CEP? ')
+    if continuar == 'sim':
+        cep = input(f'Tudo bem {nome}, por favor digite outro CEP: ')
+        buscacep(cep)
+print(f'Certo {nome}, obrigado por usar nossos serviços!')
+
+"""
+# # Exercício 2 - Remover informações repetidas do Banco de Dados
+"""
 # def buscacep(cepusuario):
 #     url = f"https://viacep.com.br/ws/{cepusuario}/json/"
 #     response = requests.get(url)
@@ -106,34 +140,3 @@ db = client.teste # A variável db recebe a função que da nome (teste) ao meu 
 # nome = input("Digite seu nome: ")
 # cep = input(f"Olá, {nome}! Por favor digite seu CEP: ")
 # buscacep(cep)
-# continuar = input(f'{nome}, deseja pesquisar outro CEP? ')
-# while continuar == 'sim':
-#     cep = input(f'Tudo bem {nome}, por favor outro CEP: ')
-#     buscacep(cep)
-# print(f'Certo {nome}, obrigado por usar nossos serviços!')
-
-"""
-# # Exercício 2 - Remover informações repetidas do Banco de Dados
-"""
-def buscacep(cepusuario):
-    url = f"https://viacep.com.br/ws/{cepusuario}/json/"
-    response = requests.get(url)
-    if response.status_code == 200:
-        data = response.json()
-        collection = db.endereco
-        documentos = list(collection.find({'cep':cepusuario}))
-        print(documentos)
-
-        if len(documentos) == 0:
-            documentos = collection.find({'bairro':'Coaçu'})
-            collection.insert_one(data)
-        print("O resultado da sua busca é: \n", data)
-    else:
-        print("Erro ao consultar o CEP")
-
-print("-" * 30)
-print("    Bem Vindo ao Busca CEP")
-print("-" * 30)
-nome = input("Digite seu nome: ")
-cep = input(f"Olá, {nome}! Por favor digite seu CEP: ")
-buscacep(cep)
