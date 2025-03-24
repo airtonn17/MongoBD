@@ -16,6 +16,7 @@ print("MONGO_URI:", uri)
 # Create a new client and connect to the server
 client = MongoClient(uri) # Preenchendo a variável client com o resultado da função MongoClient que cria a conexão com o MongoDB através dos dados contidos no parâmetro uri
 db = client.teste # A variável db recebe a função que da nome (teste) ao meu BD
+# db = MongoClient(uri).teste # Criando a conexão de forma mais compacta.
 
 """
 # # Inserindo dados no Banco de Dados "teste" na coleção "test"
@@ -27,7 +28,6 @@ db = client.teste # A variável db recebe a função que da nome (teste) ao meu 
 #     {"nome": "Ana", "idade": 22, "cidade": "Belo Horizonte"},
 #     {"nome": "Carlos", "idade": 28, "cidade": "Curitiba"}
 # ])
-# Send a ping to confirm a successful connection
 
 """
 # # Verificar se a conexão com o MongoDB foi estabelecida com sucesso
@@ -61,6 +61,12 @@ db = client.teste # A variável db recebe a função que da nome (teste) ao meu 
 # def buscacep(cepusuario):
 #     url = f"https://viacep.com.br/ws/{cepusuario}/json/"
 #     response = requests.get(url)
+#     if cepusuario[5] != '-' :
+#         substringinicial = cepusuario[:5]
+#         substringfinal = cepusuario[5:]
+#         cepusuario = substringinicial + '-' + substringfinal
+#         print(cepusuario)
+#
 #     if response.status_code == 200:
 #         data = response.json()
 #         collection = db.endereco
@@ -69,7 +75,7 @@ db = client.teste # A variável db recebe a função que da nome (teste) ao meu 
 #
 #         if len(documentos) == 0:
 #             documentos = collection.find({'bairro':'Coaçu'})
-#             collection.insert_one(data)
+#             # collection.insert_one(data)
 #         print("O resultado da sua busca é: \n", data)
 #     else:
 #         print("Erro ao consultar o CEP")
@@ -80,13 +86,29 @@ db = client.teste # A variável db recebe a função que da nome (teste) ao meu 
 # nome = input("Digite seu nome: ")
 # cep = input(f"Olá, {nome}! Por favor digite seu CEP: ")
 # buscacep(cep)
+#
+# while True:
+#     continuar = input(f'{nome}, deseja pesquisar outro CEP? ')
+#     continuar = continuar.lower()
+#     if continuar == 'sim':
+#         cep = input(f'Tudo bem {nome}, por favor digite outro CEP: ')
+#         buscacep(cep)
+#     else:
+#         break
+# print(f'Certo {nome}, obrigado por usar nossos serviços!')
 
 """
-# # Exercício 1 - Transformar o código em uma Função
+# # Exercício 2 - Remover informações repetidas do Banco de Dados
 """
 def buscacep(cepusuario):
     url = f"https://viacep.com.br/ws/{cepusuario}/json/"
     response = requests.get(url)
+    if cepusuario[5] != '-' :
+        substringinicial = cepusuario[:5]
+        substringfinal = cepusuario[5:]
+        cepusuario = substringinicial + '-' + substringfinal
+        print(cepusuario)
+
     if response.status_code == 200:
         data = response.json()
         collection = db.endereco
@@ -107,36 +129,12 @@ nome = input("Digite seu nome: ")
 cep = input(f"Olá, {nome}! Por favor digite seu CEP: ")
 buscacep(cep)
 
-continuar = 'sim'
-while continuar == 'sim':
+while True:
     continuar = input(f'{nome}, deseja pesquisar outro CEP? ')
+    continuar = continuar.lower()
     if continuar == 'sim':
         cep = input(f'Tudo bem {nome}, por favor digite outro CEP: ')
         buscacep(cep)
+    else:
+        break
 print(f'Certo {nome}, obrigado por usar nossos serviços!')
-
-"""
-# # Exercício 2 - Remover informações repetidas do Banco de Dados
-"""
-# def buscacep(cepusuario):
-#     url = f"https://viacep.com.br/ws/{cepusuario}/json/"
-#     response = requests.get(url)
-#     if response.status_code == 200:
-#         data = response.json()
-#         collection = db.endereco
-#         documentos = list(collection.find({'cep':cepusuario}))
-#         print(documentos)
-#
-#         if len(documentos) == 0:
-#             documentos = collection.find({'bairro':'Coaçu'})
-#             collection.insert_one(data)
-#         print("O resultado da sua busca é: \n", data)
-#     else:
-#         print("Erro ao consultar o CEP")
-#
-# print("-" * 30)
-# print("    Bem Vindo ao Busca CEP")
-# print("-" * 30)
-# nome = input("Digite seu nome: ")
-# cep = input(f"Olá, {nome}! Por favor digite seu CEP: ")
-# buscacep(cep)
