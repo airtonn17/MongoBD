@@ -100,41 +100,88 @@ db = client.teste # A variável db recebe a função que da nome (teste) ao meu 
 """
 # # Exercício 2 - Remover informações repetidas do Banco de Dados
 """
+
+def validacep(substring):
+    if substring[5] != '-' :
+        substringinicial = substring[:5]
+        substringfinal = substring[5:]
+        cepusuario = substringinicial + '-' + substringfinal
+        print(cepusuario)
+        return cepusuario
+
 def buscacep(cepusuario):
     url = f"https://viacep.com.br/ws/{cepusuario}/json/"
     response = requests.get(url)
-    if cepusuario[5] != '-' :
-        substringinicial = cepusuario[:5]
-        substringfinal = cepusuario[5:]
-        cepusuario = substringinicial + '-' + substringfinal
-        print(cepusuario)
-
     if response.status_code == 200:
-        data = response.json()
-        collection = db.endereco
-        documentos = list(collection.find({'cep':cepusuario}))
-        print(documentos)
-
-        if len(documentos) == 0:
-            documentos = collection.find({'bairro':'Coaçu'})
-            # collection.insert_one(data)
-        print("O resultado da sua busca é: \n", data)
+        print("O resultado da sua busca é: \n", response.json())
+        return response.json()
     else:
         print("Erro ao consultar o CEP")
+        return
 
-print("-" * 30)
-print("    Bem Vindo ao Busca CEP")
-print("-" * 30)
+def salvarcep(cepdb, datacep):
+    collection = db.endereco
+    documentos = list(collection.find({'cep':cepdb}))
+    print(documentos)
+
+    if len(documentos) == 0:
+        collection.insert_one(datacep)
+        print(f"CEP {cepdb} salvo com sucesso!!",)
+    else:
+        print("CEP já consta no nosso banco")
+
+def deletecep(cepdbdelete, datacepdelete):
+    collection = db.endereco
+    documentos = list(collection.find({'cep':cepdbdelete}))
+    print(documentos)
+
+    if len(documentos) != 0:
+        print(f'Localizei estes dados através do CEP {cepdbdelete} ')
+        confirmar = input(f'Tem certeza que deseja deletar o CEP {cepdbdelete}? Sim/Não ')
+        confirmar = confirmar.lower()
+
+        while confirmar != 'sim' or 'não':
+            if confirmar == 'sim':
+                collection.delete_one(datacepdelete)
+                print(f"CEP {cepdbdelete} deletado com sucesso!",)
+                break
+            if confirmar == 'não':
+                print(f'Entendi, o CEP {cepdbdelete} não foi apagado!')
+                break
+            else:
+                print('Por favor, responda com "sim" ou "não".')
+                confirmar = input(f'Tem certeza que deseja deletar o CEP {cepdbdelete}? Sim/Não ')
+                confirmar = confirmar.lower()
+    else:
+        print(f"CEP {cepdbdelete} não encontrado no banco de dados.")
+
+
+# print("-" * 30)
+# print("    Bem Vindo ao Gerencía CEP")
+# print("-" * 30)
+# nome = input("Digite seu nome: ")
+# cep = input(f"Olá, {nome}! Por favor digite seu CEP: ")
+
+print("-" * 31)
+print("   Bem Vindo ao Gerencía CEP")
+print("-" * 31)
 nome = input("Digite seu nome: ")
 cep = input(f"Olá, {nome}! Por favor digite seu CEP: ")
-buscacep(cep)
+
+
+resultbuscacep = buscacep(cep)
+resultvalidacep = validacep(cep)
+# salvarcep(resultvalidacep, resultbuscacep)
+deletecep(resultvalidacep, resultbuscacep)
 
 while True:
     continuar = input(f'{nome}, deseja pesquisar outro CEP? ')
     continuar = continuar.lower()
     if continuar == 'sim':
         cep = input(f'Tudo bem {nome}, por favor digite outro CEP: ')
-        buscacep(cep)
+        resultbuscacep = buscacep(cep)
+        resultvalidacep = validacep(cep)
+        salvarcep(resultvalidacep, resultbuscacep)
     else:
         break
 print(f'Certo {nome}, obrigado por usar nossos serviços!')
