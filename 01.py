@@ -169,22 +169,30 @@ def continuar():
     print(f'Certo {nome}, obrigado por usar nossos serviços!')
 
 
-# Main
+# Boas Vindas
 print("-" * 31)
-print("      API Gerencía CEP")
+print("        API Gerencía CEP")
 print("-" * 31)
 nome = input("Porfavor, digite seu nome: ")
 print(f'Bem vindo(a) {nome}!')
-opcao = input('Digite o numero que corresponde ao serviço deseja fazer: ')
-print('Buscar um CEP: [1]')
-print('Deletar um CEP: [2]')
-if opcao == 1:
+print("-" * 31)
 
-cep = input(f"Olá, {nome}! Por favor digite seu CEP: ")
-
-
-resultbuscacep = buscacep(cep)
-resultvalidacep = validacep(cep)
-# salvarcep(resultvalidacep, resultbuscacep)
-deletecep(resultvalidacep, resultbuscacep)
-continuar()
+# Menu
+while True:
+    opcao = input('Digite o numero que corresponde ao serviço desejado: ')
+    print('Buscar um CEP: [1]')
+    print('Deletar um CEP: [2]')
+    if opcao == 1:
+        cep = input(f"Certo {nome}, por favor digite um CEP: ")
+        resultbuscacep = buscacep(cep)
+        resultvalidacep = validacep(cep)
+        salvarcep(resultvalidacep, resultbuscacep)
+        continuar()
+    if opcao == 2:
+        cep = input(f"Certo {nome}, por favor digite um CEP: ")
+        resultbuscacep = buscacep(cep)
+        resultvalidacep = validacep(cep)
+        deletecep(resultvalidacep, resultbuscacep)
+        continuar()
+    else:
+        print('Por favor, responda com uma das opções acima')
