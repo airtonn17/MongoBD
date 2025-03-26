@@ -157,6 +157,7 @@ def deletecep(cepdbdelete, datacepdelete):
 
 def continuar():
     while True:
+        print("-" * 31)
         continuar = input(f'{nome}, deseja pesquisar outro CEP? ')
         continuar = continuar.lower()
         if continuar == 'sim':
@@ -166,12 +167,11 @@ def continuar():
             salvarcep(resultvalidacep, resultbuscacep)
         else:
             break
-    print(f'Certo {nome}, obrigado por usar nossos serviços!')
 
 
 # Boas Vindas
 print("-" * 31)
-print("        API Gerencía CEP")
+print("       API Gerencía CEP")
 print("-" * 31)
 nome = input("Porfavor, digite seu nome: ")
 print(f'Bem vindo(a) {nome}!')
@@ -179,20 +179,29 @@ print("-" * 31)
 
 # Menu
 while True:
-    opcao = input('Digite o numero que corresponde ao serviço desejado: ')
+    print('        MENU PRINCIPAL')
+    print("-" * 31)
     print('Buscar um CEP: [1]')
     print('Deletar um CEP: [2]')
-    if opcao == 1:
+    print('Sair: [3]')
+    opcao = input('Digite o numero que corresponde ao serviço desejado: ')
+
+    if opcao == '1':
+        print("-" * 31)
         cep = input(f"Certo {nome}, por favor digite um CEP: ")
         resultbuscacep = buscacep(cep)
         resultvalidacep = validacep(cep)
         salvarcep(resultvalidacep, resultbuscacep)
         continuar()
-    if opcao == 2:
+    if opcao == '2':
+        print("-" * 31)
         cep = input(f"Certo {nome}, por favor digite um CEP: ")
         resultbuscacep = buscacep(cep)
         resultvalidacep = validacep(cep)
         deletecep(resultvalidacep, resultbuscacep)
         continuar()
+    if opcao == '3':
+        print(f'Certo {nome}, obrigado por usar nossos serviços!')
+        break
     else:
         print('Por favor, responda com uma das opções acima')
