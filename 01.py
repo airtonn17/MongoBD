@@ -74,7 +74,6 @@ db = client.teste # A variável db recebe a função que da nome (teste) ao meu 
 #         print(documentos)
 #
 #         if len(documentos) == 0:
-#             documentos = collection.find({'bairro':'Coaçu'})
 #             # collection.insert_one(data)
 #         print("O resultado da sua busca é: \n", data)
 #     else:
@@ -168,6 +167,25 @@ def continuar():
         else:
             break
 
+def menu(opcaomenu):
+    if opcao == '1':
+        print("-" * 31)
+        cep = input(f"Certo {nome}, por favor digite um CEP: ")
+        resultbuscacep = buscacep(cep)
+        resultvalidacep = validacep(cep)
+        salvarcep(resultvalidacep, resultbuscacep)
+        continuar()
+    if opcao == '2':
+        print("-" * 31)
+        cep = input(f"Certo {nome}, por favor digite um CEP: ")
+        resultbuscacep = buscacep(cep)
+        resultvalidacep = validacep(cep)
+        deletecep(resultvalidacep, resultbuscacep)
+        continuar()
+    if opcao == '3':
+        print(f'Certo {nome}, obrigado por usar nossos serviços!')
+    else:
+        print('Por favor, responda com uma das opções acima')
 
 # Boas Vindas
 print("-" * 31)
@@ -186,22 +204,4 @@ while True:
     print('Sair: [3]')
     opcao = input('Digite o numero que corresponde ao serviço desejado: ')
 
-    if opcao == '1':
-        print("-" * 31)
-        cep = input(f"Certo {nome}, por favor digite um CEP: ")
-        resultbuscacep = buscacep(cep)
-        resultvalidacep = validacep(cep)
-        salvarcep(resultvalidacep, resultbuscacep)
-        continuar()
-    if opcao == '2':
-        print("-" * 31)
-        cep = input(f"Certo {nome}, por favor digite um CEP: ")
-        resultbuscacep = buscacep(cep)
-        resultvalidacep = validacep(cep)
-        deletecep(resultvalidacep, resultbuscacep)
-        continuar()
-    if opcao == '3':
-        print(f'Certo {nome}, obrigado por usar nossos serviços!')
-        break
-    else:
-        print('Por favor, responda com uma das opções acima')
+menu(opcao)
