@@ -205,4 +205,3 @@ while True:
     opcao = input('Digite o numero que corresponde ao serviço desejado: ')
 
 menu(opcao)
-
