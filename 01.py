@@ -2,21 +2,23 @@ from pymongo.mongo_client import MongoClient # Importando a biblioteca de conex�
 import os # Importando biblioteca para usar recursos do SO (como acessar arquivos)
 from dotenv import load_dotenv # Carregar as informações do arquivo .env (para proteger dados sensíveis)
 import requests # Uma biblioteca que permite que me conecte com outras APIs
+import Funcoes
 load_dotenv() # Carrega as variáveis do .env
 
 """
 # # Criando a conexão com meu Banco de Dados
 """
-# Acessa as variáveis de ambiente
-uri = os.getenv("MONGO_URI")
-
-# Exemplo de impressão dos dados .env
-print("MONGO_URI:", uri)
-
-# Create a new client and connect to the server
-client = MongoClient(uri) # Preenchendo a variável client com o resultado da função MongoClient que cria a conexão com o MongoDB através dos dados contidos no parâmetro uri
-db = client.teste # A variável db recebe a função que da nome (teste) ao meu BD
-# db = MongoClient(uri).teste # Criando a conexão de forma mais compacta.
+# # Acessa as variáveis de ambiente
+# uri = os.getenv("MONGO_URI")
+#
+# # Exemplo de impressão dos dados .env
+# print("MONGO_URI:", uri)
+#
+# # Create a new client and connect to the server
+# client = MongoClient(uri) # Preenchendo a variável client com o resultado da função MongoClient que cria a conexão com o MongoDB através dos dados contidos no parâmetro uri
+# db = client.teste # A variável db recebe a função que da nome (teste) ao meu BD
+#
+# # db = MongoClient(uri).teste # Criando a conexão de forma mais compacta.
 
 """
 # # Inserindo dados no Banco de Dados "teste" na coleção "test"
@@ -100,92 +102,92 @@ db = client.teste # A variável db recebe a função que da nome (teste) ao meu 
 # # Exercício 2 - Remover informações repetidas do Banco de Dados
 """
 
-def validacep(substring):
-    if substring[5] != '-' :
-        substringinicial = substring[:5]
-        substringfinal = substring[5:]
-        cepusuario = substringinicial + '-' + substringfinal
-        print(cepusuario)
-        return cepusuario
-
-def buscacep(cepusuario):
-    url = f"https://viacep.com.br/ws/{cepusuario}/json/"
-    response = requests.get(url)
-    if response.status_code == 200:
-        print("O resultado da sua busca é: \n", response.json())
-        return response.json()
-    else:
-        print("Erro ao consultar o CEP")
-        return
-
-def salvarcep(cepdb, datacep):
-    collection = db.endereco
-    documentos = list(collection.find({'cep':cepdb}))
-    print(documentos)
-
-    if len(documentos) == 0:
-        collection.insert_one(datacep)
-        print(f"CEP {cepdb} salvo com sucesso!!",)
-    else:
-        print("CEP já consta no nosso banco")
-
-def deletecep(cepdbdelete, datacepdelete):
-    collection = db.endereco
-    documentos = list(collection.find({'cep':cepdbdelete}))
-    print(documentos)
-
-    if len(documentos) != 0:
-        print(f'Localizei estes dados através do CEP {cepdbdelete} ')
-        confirmar = input(f'Tem certeza que deseja deletar o CEP {cepdbdelete}? Sim/Não ')
-        confirmar = confirmar.lower()
-
-        while confirmar != 'sim' or 'não':
-            if confirmar == 'sim':
-                collection.delete_one(datacepdelete)
-                print(f"CEP {cepdbdelete} deletado com sucesso!",)
-                break
-            if confirmar == 'não':
-                print(f'Entendi, o CEP {cepdbdelete} não foi apagado!')
-                break
-            else:
-                print('Por favor, responda com "sim" ou "não".')
-                confirmar = input(f'Tem certeza que deseja deletar o CEP {cepdbdelete}? Sim/Não ')
-                confirmar = confirmar.lower()
-    else:
-        print(f"CEP {cepdbdelete} não encontrado no banco de dados.")
-
-def continuar():
-    while True:
-        print("-" * 31)
-        continuar = input(f'{nome}, deseja pesquisar outro CEP? ')
-        continuar = continuar.lower()
-        if continuar == 'sim':
-            cep = input(f'Tudo bem {nome}, por favor digite outro CEP: ')
-            resultbuscacep = buscacep(cep)
-            resultvalidacep = validacep(cep)
-            salvarcep(resultvalidacep, resultbuscacep)
-        else:
-            break
-
-def menu(opcaomenu):
-    if opcao == '1':
-        print("-" * 31)
-        cep = input(f"Certo {nome}, por favor digite um CEP: ")
-        resultbuscacep = buscacep(cep)
-        resultvalidacep = validacep(cep)
-        salvarcep(resultvalidacep, resultbuscacep)
-        continuar()
-    if opcao == '2':
-        print("-" * 31)
-        cep = input(f"Certo {nome}, por favor digite um CEP: ")
-        resultbuscacep = buscacep(cep)
-        resultvalidacep = validacep(cep)
-        deletecep(resultvalidacep, resultbuscacep)
-        continuar()
-    if opcao == '3':
-        print(f'Certo {nome}, obrigado por usar nossos serviços!')
-    else:
-        print('Por favor, responda com uma das opções acima')
+# def validacep(substring):
+#     if substring[5] != '-' :
+#         substringinicial = substring[:5]
+#         substringfinal = substring[5:]
+#         cepusuario = substringinicial + '-' + substringfinal
+#         print(cepusuario)
+#         return cepusuario
+#
+# def buscacep(cepusuario):
+#     url = f"https://viacep.com.br/ws/{cepusuario}/json/"
+#     response = requests.get(url)
+#     if response.status_code == 200:
+#         print("O resultado da sua busca é: \n", response.json())
+#         return response.json()
+#     else:
+#         print("Erro ao consultar o CEP")
+#         return
+#
+# def salvarcep(cepdb, datacep):
+#     collection = db.endereco
+#     documentos = list(collection.find({'cep':cepdb}))
+#     print(documentos)
+#
+#     if len(documentos) == 0:
+#         collection.insert_one(datacep)
+#         print(f"CEP {cepdb} salvo com sucesso!!",)
+#     else:
+#         print("CEP já consta no nosso banco")
+#
+# def deletecep(cepdbdelete, datacepdelete):
+#     collection = db.endereco
+#     documentos = list(collection.find({'cep':cepdbdelete}))
+#     print(documentos)
+#
+#     if len(documentos) != 0:
+#         print(f'Localizei estes dados através do CEP {cepdbdelete} ')
+#         confirmar = input(f'Tem certeza que deseja deletar o CEP {cepdbdelete}? Sim/Não ')
+#         confirmar = confirmar.lower()
+#
+#         while confirmar != 'sim' or 'não':
+#             if confirmar == 'sim':
+#                 collection.delete_one(datacepdelete)
+#                 print(f"CEP {cepdbdelete} deletado com sucesso!",)
+#                 break
+#             if confirmar == 'não':
+#                 print(f'Entendi, o CEP {cepdbdelete} não foi apagado!')
+#                 break
+#             else:
+#                 print('Por favor, responda com "sim" ou "não".')
+#                 confirmar = input(f'Tem certeza que deseja deletar o CEP {cepdbdelete}? Sim/Não ')
+#                 confirmar = confirmar.lower()
+#     else:
+#         print(f"CEP {cepdbdelete} não encontrado no banco de dados.")
+#
+# def continuar():
+#     while True:
+#         print("-" * 31)
+#         continuar = input(f'{nome}, deseja pesquisar outro CEP? ')
+#         continuar = continuar.lower()
+#         if continuar == 'sim':
+#             cep = input(f'Tudo bem {nome}, por favor digite outro CEP: ')
+#             resultbuscacep = buscacep(cep)
+#             resultvalidacep = validacep(cep)
+#             salvarcep(resultvalidacep, resultbuscacep)
+#         else:
+#             break
+#
+# def menu(opcaomenu):
+#     if opcao == '1':
+#         print("-" * 31)
+#         cep = input(f"Certo {nome}, por favor digite um CEP: ")
+#         resultbuscacep = buscacep(cep)
+#         resultvalidacep = validacep(cep)
+#         salvarcep(resultvalidacep, resultbuscacep)
+#         continuar()
+#     if opcao == '2':
+#         print("-" * 31)
+#         cep = input(f"Certo {nome}, por favor digite um CEP: ")
+#         resultbuscacep = buscacep(cep)
+#         resultvalidacep = validacep(cep)
+#         deletecep(resultvalidacep, resultbuscacep)
+#         continuar()
+#     if opcao == '3':
+#         print(f'Certo {nome}, obrigado por usar nossos serviços!')
+#     else:
+#         print('Por favor, responda com uma das opções acima')
 
 # Boas Vindas
 print("-" * 31)
@@ -204,6 +206,4 @@ while True:
     print('Sair: [3]')
     opcao = input('Digite o numero que corresponde ao serviço desejado: ')
 
-menu(opcao)
-
-
+Funcoes.menu(opcao)
